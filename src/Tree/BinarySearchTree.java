@@ -154,9 +154,33 @@ public class BinarySearchTree {
             return false;
         }
 
+        if(res.right != null && res.left !=null){
+
+        }
+        else if(res.right == null && res.left == null){
+            //root node
+            if(res.parent == null){
+                root = null;
+            }
+            else if(res.parent.data < key){
+                res.parent.right = null;
+            }else{
+                res.parent.left = null;
+            }
+
+            res = null;
+
+        }else{
+
+        }
 
         return true;
-
     }
+
+    public Node searchSuccessor(Node root){
+
+        return null;
+    }
+
 
 }
