@@ -116,7 +116,7 @@ public class BinarySearchTree {
                     return curr;
                 }
                 curr = curr.right;
-            }else if(curr.data > key){
+            }else{
                 if(curr.left == null){
                     return curr;
                 }
@@ -154,32 +154,94 @@ public class BinarySearchTree {
             return false;
         }
 
+        // node with two subtree
         if(res.right != null && res.left !=null){
+            //find the smallest one in the right side
+            Node successor = searchSuccessor(res);
+
+            Node resParent = res.parent;
+
+            Node sucParent = successor.parent;
+
+            //resolve the reference in parent node
+            if(resParent != null){
+                if(res.data < resParent.data){
+                    // left
+                    resParent.left = successor;
+                }else{
+                    resParent.right = successor;
+                }
+
+            }else{
+                // res is root
+            }
+
+            //resolve the reference in child node
+            res.left.parent = successor;
+            successor.left = res.left;
+
+            res.right.parent = successor;
+            successor.right = res.right;
+
+            //resolve the reference in successor's parent node
+            sucParent.left = null;
 
         }
+        //leaf node
         else if(res.right == null && res.left == null){
             //root node
             if(res.parent == null){
                 root = null;
             }
+            // delete directly
             else if(res.parent.data < key){
                 res.parent.right = null;
             }else{
                 res.parent.left = null;
             }
 
-            res = null;
+        }
+        // node with one subtree
+        else{
+            if(res.right != null){
+               Node successor = searchSuccessor(res);
 
-        }else{
+               res.right.parent = successor;
+               successor.right = res.right;
+
+               successor.parent.left = null;
+            }
+            else{
+                Node successor = res.left;
+
+                while(successor != null){
+                    successor = successor.right;
+                }
+                res.left.parent = successor;
+                successor.left = res.left;
+
+                successor.parent.right = null;
+
+            }
+
+
 
         }
+        res = null;
 
         return true;
     }
 
     public Node searchSuccessor(Node root){
+        Node curr = root.right;
+        Node prev = root.right;
 
-        return null;
+        while(curr != null){
+            prev = curr;
+            curr = curr.left;
+        }
+
+        return curr;
     }
 
 
