@@ -94,12 +94,69 @@ public class BinarySearchTree {
             right = null;
         }
 
-
-
-
-
     }
 
+    private Node root;
 
+    public BinarySearchTree(){
+        this.root = null;
+    }
+
+    public BinarySearchTree(int value){
+        this.root = new Node(value);
+    }
+
+    public Node search(int key){
+        Node curr = this.root;
+        while(curr != null){
+            if(curr.data == key){
+                return curr;
+            }else if(curr.data < key){
+                if(curr.right == null){
+                    return curr;
+                }
+                curr = curr.right;
+            }else if(curr.data > key){
+                if(curr.left == null){
+                    return curr;
+                }
+                curr = curr.left;
+            }
+        }
+        return  null;
+    }
+
+    public void insert(int key){
+        Node newNode = new Node(key);
+        if(root == null){
+            root = newNode;
+            System.out.println("add to root(new)");
+        }else{
+            Node parent = search(key);
+            if(key < parent.data){
+                parent.left = newNode;
+                newNode.parent = parent;
+                System.out.println("add to left of: "+parent.data);
+            }else if( key > parent.data){
+                parent.right = newNode;
+                newNode.parent = parent;
+                System.out.println("add to right of: "+parent.data);
+            }else{
+                System.out.println(key+"  is already in the tree");
+            }
+        }
+    }
+
+    public boolean delete(int key){
+        Node res = search(key);
+        if(res.data != key){
+            System.out.println("tree has no such node");
+            return false;
+        }
+
+
+        return true;
+
+    }
 
 }
