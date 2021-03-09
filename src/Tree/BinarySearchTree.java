@@ -236,12 +236,43 @@ public class BinarySearchTree {
         Node curr = root.right;
         Node prev = root.right;
 
+        if(curr == null){
+            return root.parent;
+        }
         while(curr != null){
             prev = curr;
             curr = curr.left;
         }
 
-        return curr;
+        return prev;
+    }
+
+    public Node getRoot(){
+        return root;
+    }
+
+    public void inOrder(Node node){
+        if(node != null){
+            inOrder(node.left);
+            System.out.println( node.data+" ");
+            inOrder((node.right));
+        }
+    }
+
+    public void preOrder(Node node){
+        if(node !=null){
+            System.out.println( node.data+" ");
+            preOrder(node.left);
+            preOrder(node.right);
+        }
+    }
+
+    public void postOrder(Node node){
+        if(node != null){
+            postOrder(node.left);
+            postOrder(node.right);
+            System.out.println( node.data+" ");
+        }
     }
 
 
