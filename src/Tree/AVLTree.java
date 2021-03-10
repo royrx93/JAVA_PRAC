@@ -230,41 +230,25 @@ public class AVLTree {
         if( balance < -1 || balance > 1){
             System.out.println("un-balanced");
         }
-        /**
-         *  Left Left Case
-            if (balance > 1 && key < node.left.key)
-                return rightRotate(node);
-            // Right Right Case
-            if (balance < -1 && key > node.right.key)
-                return leftRotate(node);
-            // Left Right Case
-            if (balance > 1 && key > node.left.key) {
-                node.left = leftRotate(node.left);
-                return rightRotate(node);
-            }
-            // Right Left Case
-            if (balance < -1 && key < node.right.key) {
-                node.right = rightRotate(node.right);
-                return leftRotate(node);
-            }
-        */
-        travelUp();
+
         System.out.println(root.key);
+
         /**
          * from GfGs, good
+         // Left Left Case
         if(balance >1 && key < root.left.key){
             return rightRotation(root);
         }
-
+         // Right Right Case
         if(balance <-1 && key > root.right.key){
             return leftRotation(root);
         }
-
+         // Left Right Case
         if(balance >1 && key > root.left.key){
             root.left = leftRotation(root.left);
             return rightRotation(root);
         }
-
+         // Right Left Case
         if(balance < -1 && key < root.right.key){
             root.right = rightRotation(root.right);
             return  leftRotation(root);
@@ -272,16 +256,22 @@ public class AVLTree {
         */
 
         /**
-         * combine GfGs' if statement, good
+         * combine GfGs' if statement NOT GOOD
+         *  in this combination, if the execute statement did not return,
+         *      the other if statement may be executed in the same time as root be rotated twice
          */
+
+        /**
         if(balance >1 && key < root.left.key){
             System.out.println("LL"+root.key);
             root= rightRotation(root);
         }
 
         if(balance <-1 && key > root.right.key){
-            System.out.println("RR"+ root.key);
-            root = leftRotation(root);
+
+            return leftRotation(root);
+            //System.out.println("RR"+ root.key);
+            //root = leftRotation(root);
         }
 
         if(balance >1 && key > root.left.key){
@@ -295,8 +285,12 @@ public class AVLTree {
             root.right = rightRotation(root.right);
             root = leftRotation(root);
         }
+        */
+
         /**
-         * if statement has something wrong---------------????
+         * balance decides which side of the ancestor node was skewed.
+         *  comparing the key with the corresponding side's key can tell us which case this skew is.
+         */
         //right-skewed
         if(balance < -1){
             //RR
@@ -306,7 +300,7 @@ public class AVLTree {
 
             }
             //RL
-            else if( root.left != null && key < root.right.key){
+            else if( root.right != null && key < root.right.key){
                 System.out.println("RL"+root.key);
                 root.right = rightRotation(root.right);
                 root = leftRotation(root);
@@ -321,13 +315,13 @@ public class AVLTree {
                 root= rightRotation(root);
             }
             //LR
-            else if(root.right != null && key > root.left.key){
+            else if(root.left != null && key > root.left.key){
                 System.out.println("LR"+root.key);
                 root.left = leftRotation(root.left);
                 root = rightRotation(root);
             }
         }
-        */
+
         return root;
     }
 
