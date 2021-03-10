@@ -78,7 +78,7 @@ public class AVLTree {
             this.left = left;
             this.right = right;
             this.parent = parent;
-            this.height = 0;
+            this.height = 1;
         }
     }
 
@@ -89,7 +89,7 @@ public class AVLTree {
     }
 
     private int max(int a, int b){
-        return a > b ? a:b;
+        return (a > b) ? a:b;
     }
 
     private int height(Node node){
@@ -162,15 +162,16 @@ public class AVLTree {
      */
     private Node leftRotation(Node x){
         Node y = x.right;
+        Node T2 = y.left;
 
-        x.right = y.left;
         y.left = x;
+        x.right = T2;
 
         y.parent = x.parent;
         x.parent = y;
 
-        y.height = 1 + max(height(y.left),height(y.right));
         x.height = 1 + max(height(x.left),height(x.right));
+        y.height = 1 + max(height(y.left),height(y.right));
 
         return y;
     }
@@ -182,9 +183,10 @@ public class AVLTree {
      */
     private Node rightRotation(Node y){
         Node x = y.left;
+        Node T2 = x.right;
 
-        y.left = x.right;
         x.right = y;
+        y.left = T2;
 
         x.parent = y.parent;
         y.parent = x;
@@ -216,14 +218,18 @@ public class AVLTree {
             root.left = insert(root.left, key);
         }
         else{
+            //root.height = 1 + max(height(root.right), height(root.left));
             return root;
         }
 
-        root.height = 1 + max(root.left.height, root.left.height);
+        root.height = 1 + max(height(root.right), height(root.left));
 
         //balance
         int balance = getBalance(root);
-
+        System.out.println("balance factor: "+ balance);
+        if( balance < -1 || balance > 1){
+            System.out.println("un-balanced");
+        }
         /**
          *  Left Left Case
             if (balance > 1 && key < node.left.key)
@@ -242,40 +248,86 @@ public class AVLTree {
                 return leftRotate(node);
             }
         */
+        travelUp();
+        System.out.println(root.key);
+        /**
+         * from GfGs, good
+        if(balance >1 && key < root.left.key){
+            return rightRotation(root);
+        }
 
+        if(balance <-1 && key > root.right.key){
+            return leftRotation(root);
+        }
+
+        if(balance >1 && key > root.left.key){
+            root.left = leftRotation(root.left);
+            return rightRotation(root);
+        }
+
+        if(balance < -1 && key < root.right.key){
+            root.right = rightRotation(root.right);
+            return  leftRotation(root);
+        }
+        */
+
+        /**
+         * combine GfGs' if statement, good
+         */
+        if(balance >1 && key < root.left.key){
+            System.out.println("LL"+root.key);
+            root= rightRotation(root);
+        }
+
+        if(balance <-1 && key > root.right.key){
+            System.out.println("RR"+ root.key);
+            root = leftRotation(root);
+        }
+
+        if(balance >1 && key > root.left.key){
+            System.out.println("LR"+root.key);
+            root.left = leftRotation(root.left);
+            root = rightRotation(root);
+        }
+
+        if(balance < -1 && key < root.right.key){
+            System.out.println("RL"+root.key);
+            root.right = rightRotation(root.right);
+            root = leftRotation(root);
+        }
+        /**
+         * if statement has something wrong---------------????
         //right-skewed
         if(balance < -1){
             //RR
-            if(key > root.right.key){
+            if(root.right != null && key > root.right.key){
+                System.out.println("RR"+ root.key);
                 root = leftRotation(root);
+
             }
             //RL
-            else if(key < root.left.key){
+            else if( root.left != null && key < root.right.key){
+                System.out.println("RL"+root.key);
                 root.right = rightRotation(root.right);
                 root = leftRotation(root);
-            }else{
-                System.out.println("right-skewed but not find the unbalanced point");
-                throw new RuntimeException("right-skewed but not find the unbalanced point");
             }
 
         }
         //left-skewed
         else if( balance > 1){
             //LL
-            if(key < root.left.key){
+            if(root.left != null && key < root.left.key){
+                System.out.println("LL"+root.key);
                 root= rightRotation(root);
             }
             //LR
-            else if(key > root.right.key){
+            else if(root.right != null && key > root.left.key){
+                System.out.println("LR"+root.key);
                 root.left = leftRotation(root.left);
                 root = rightRotation(root);
-            }else{
-                throw new RuntimeException("left-skewed not find the unbalanced point");
             }
         }
-
-
-
+        */
         return root;
     }
 
@@ -312,7 +364,7 @@ public class AVLTree {
     }
     private void preOrder(Node node){
         if(node !=null){
-            System.out.println( node.key+" ");
+            System.out.print( node.key+" ");
             preOrder(node.left);
             preOrder(node.right);
         }
@@ -324,7 +376,7 @@ public class AVLTree {
     private void inOrder(Node node){
         if(node != null){
             inOrder(node.left);
-            System.out.println( node.key+" ");
+            System.out.print( node.key+" ");
             inOrder((node.right));
         }
     }
@@ -336,7 +388,31 @@ public class AVLTree {
         if(node != null){
             postOrder(node.left);
             postOrder(node.right);
-            System.out.println( node.key+" ");
+            System.out.print( node.key+" ");
+        }
+    }
+    public void travelUp(){
+        travelUp(root);
+    }
+
+    private void travelUp(Node root){
+        if(root != null){
+            System.out.print("[ "+root.key+" ,height: "+ height(root)+" to: ");
+            if(root.left !=null){
+                System.out.print("（left: "+root.left.key+")");
+            }
+            if(root.right!=null){
+                System.out.print(" (right: "+root.right.key +")");
+            }
+            System.out.print("]");
+
+            if(root.left!=null){
+                travelUp(root.left);
+            }
+            if(root.right!=null){
+                travelUp(root.right);
+            }
+
         }
     }
 
