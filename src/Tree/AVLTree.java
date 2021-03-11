@@ -291,6 +291,8 @@ public class AVLTree {
          * balance decides which side of the ancestor node was skewed.
          *  comparing the key with the corresponding side's key can tell us which case this skew is.
          */
+
+        //own version; good
         //right-skewed
         if(balance < -1){
             //RR
@@ -321,6 +323,39 @@ public class AVLTree {
                 root = rightRotation(root);
             }
         }
+
+        /**
+        //From java interview guideline
+        if(root == null){
+            root = new Node(key,null,null,null);
+        }else if(key < root.key) {
+            //go left
+            root.left = insert(root.left, key);
+            root.left.parent = root;
+
+            //balance
+            if (height(root.left) - height(root.right) == 2) {
+                if (key < root.left.key) {
+                    root = LLRotation(root);
+                } else {
+                    root = LRRotation(root);
+                }
+            }
+
+        }else if(key> root.key){
+            //go right
+            root.right = insert(root.right, key);
+            root.right.parent = root;
+            if(height(root.right) - height(root.left) == 2){
+                if(key < root.right.key){
+                    root = RLRotation(root);
+                }else{
+                    root = RRRotation(root);
+                }
+            }
+        }
+        root.height = 1 + max(height(root.left), height(root.right));
+        */
 
         return root;
     }
@@ -452,11 +487,76 @@ public class AVLTree {
     private Node remove(Node root, Node removed){
         if(root == null || removed == null){
             System.out.println("empty root");
-            throw new RuntimeException("empty tree");
+            //throw new RuntimeException("empty tree");
+            return root;
+        }
+
+        // standard bst remove
+        if(removed.key < root.key){
+            //left sub tree
+            root.left = remove(root.left, removed);
+        }
+        else if(removed.key > root.key){
+            //right sub tree
+            root.right = remove(root.right, removed);
+        }else{
+            //this node is the node need removed.
+            // two child
+            if( root.left != null && root.right != null){
+                if(height(root.left) > height(root.right)){
+                    Node temp = findMax(root.left);
+                    root.key = temp.key;
+                    root.left = remove(root.left, temp);
+                    root.left.parent =root;
+                }else{
+                    Node temp = findMin(root.right);
+                    root.key = temp.key;
+                    root.right = remove(root.right, temp);
+                    root.right.parent = root;
+                }
+
+            }else{
+                // one child or none child
+                Node temp = root;
+                root = (root.left == null)? root.right : root.left;
+                if(root !=null){
+                    root.parent = temp.parent;
+                }
+                temp = null;
+            }
+        }
+
+        if(root == null){
+            return root;
+        }
+        root.height = max(height(root.left), height(root.right)) + 1;
+
+        //balance
+        int balance = getBalance(root);
+        //RR
+        if(balance < -1 && removed.key > root.right.key){
+            return leftRotation(root);
+        }
+        //RL
+        if(balance < -1 && removed.key < root.right.key ){
+            root.right = rightRotation(root.right);
+            return leftRotation(root);
+        }
+        //LL
+        if(balance > 1 && removed.key < root.left.key){
+            return rightRotation(root);
+        }
+        //LR
+        if(balance > 1 && removed.key > root.left.key){
+            root.left = leftRotation(root.left);
+            return rightRotation(root);
         }
 
 
-        return null;
+
+
+
+        return root;
     }
 
 }

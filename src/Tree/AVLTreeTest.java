@@ -14,7 +14,8 @@ public class AVLTreeTest {
         print(tree);
         System.out.println("find element 12 in AVL tree: "+ tree.search(12));
         System.out.println("find element 20 in AVL tree: "+ tree.search(20));
-
+        tree.remove(13);
+        print(tree);
     }
     public static void print1(AVLTree tree){
         System.out.println("traversal: ");
