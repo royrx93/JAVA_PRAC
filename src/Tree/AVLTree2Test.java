@@ -22,8 +22,6 @@ public class AVLTree2Test {
       }
 
       print(tree);
-      //System.out.println("find element 12 in AVL tree: "+ tree.search(12));
-      //System.out.println("find element 20 in AVL tree: "+ tree.search(20));
 
         /* The constructed AVL Tree would be
              30
